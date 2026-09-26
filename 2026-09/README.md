@@ -1,7 +1,8 @@
 # 2026年9月 イーサリアム主要 EIP まとめ
 
 対象期間: 2026-09-01 〜 2026-09-26（[ethereum/EIPs](https://github.com/ethereum/EIPs) の master）
-自動集計の全データ → [`eip-activity.md`](./eip-activity.md)（`scripts/eip_monthly.py` で生成）
+コミット履歴の集計データ → [`eip-activity.md`](./eip-activity.md)
+Solidity サンプル → [`contracts/`](./contracts)
 
 ## TL;DR
 
@@ -110,8 +111,22 @@ SFI（Scheduled for Inclusion）は引き続き **FOCIL（EIP-7805）** と **Fr
 
 ---
 
-## 再生成方法
+## 5. Solidity サンプル（[`contracts/`](./contracts)）
+
+今月の EIP のうち、コントラクト開発者に直接影響するものを Solidity で実装した。
+Foundry プロジェクトで、forge-std などの外部依存はない。
+
+| ファイル | 対応 EIP | 内容 |
+| --- | --- | --- |
+| [`src/eip8355/MLDSA.sol`](./contracts/src/eip8355/MLDSA.sol) | EIP-8355 | ML-DSA 検証プリコンパイル（0x12〜0x14）の呼び出しライブラリ。長さチェック、ガス見積もり、プリコンパイル導入済みかの判定つき |
+| [`src/eip8355/MLDSAAccount.sol`](./contracts/src/eip8355/MLDSAAccount.sol) | EIP-8355 | ML-DSA 鍵で操作するポスト量子スマートアカウント（nonce・chainid 付きでリプレイ防止、鍵ローテーション対応） |
+| [`src/eip8246/SelfDestructBurn.sol`](./contracts/src/eip8246/SelfDestructBurn.sol) | EIP-8246 | `SelfBurner`: SELFDESTRUCT で ETH を焼却する従来のパターン（OP Stack の `burn()` 相当）<br>`BurnProbe`: EIP-8246 が有効なチェーンかをオンチェーンで判定<br>`SupplyBurner`: EIP-8246 後の移行例（dead アドレスへ送金） |
 
 ```bash
-python3 scripts/eip_monthly.py --month 2026-09
+cd 2026-09/contracts
+forge test
 ```
+
+- EIP-8355 のテストでは、プリコンパイルのアドレスに入出力形式だけ合わせたモックを `vm.etch` で配置している（ML-DSA の暗号処理そのものは検証しない）。
+- EIP-8246 のテストは現行 EVM（EIP-8246 未導入）での挙動を確認するもの。EIP-8246 が入った EVM では焼却されずに残高が残るため、結果が逆になる。
+- EIP-7906（TXTRACE/TXDIFF）、EIP-8360（TCREATE）、EIP-7784（GETCONTRACT）は新しいオペコードで solc がまだ対応していないため、サンプルには含めていない。

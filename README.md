@@ -4,21 +4,15 @@
 
 ## 月次レポート
 
-| 月 | まとめ | 自動集計 |
-| --- | --- | --- |
-| 2026-09 | [2026-09/README.md](./2026-09/README.md) | [2026-09/eip-activity.md](./2026-09/eip-activity.md) |
+| 月 | まとめ | 集計データ | Solidity |
+| --- | --- | --- | --- |
+| 2026-09 | [README](./2026-09/README.md) | [eip-activity.md](./2026-09/eip-activity.md) | [contracts](./2026-09/contracts) |
 
-## レポート生成
+## Solidity サンプル
 
-`scripts/eip_monthly.py` は [ethereum/EIPs](https://github.com/ethereum/EIPs) を `.cache/EIPs` に clone し、指定月のコミットから以下を Markdown に出力します（Python 3.10+ と git のみ必要）。
-
-- 新規マージされた EIP
-- ステータス変更（Draft → Review → Last Call → Final など）
-- ハードフォーク Meta EIP のインクルージョン状態（SFI / CFI / PFI / DFI）の変化とアクティベーション日程
-- 更新が活発だった EIP とコミットログ
+各月のフォルダの `contracts/` に、その月の EIP に対応した Solidity 実装を置いています（Foundry プロジェクト）。
 
 ```bash
-python3 scripts/eip_monthly.py                     # 今月
-python3 scripts/eip_monthly.py --month 2026-09     # 指定月 → 2026-09/eip-activity.md
-python3 scripts/eip_monthly.py --month 2026-09 --out path/to/report.md
+cd 2026-09/contracts
+forge test
 ```

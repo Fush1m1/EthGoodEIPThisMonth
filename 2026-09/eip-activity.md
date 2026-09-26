@@ -1,6 +1,6 @@
 # EIP アクティビティレポート 2026-09
 
-> `scripts/eip_monthly.py` により [ethereum/EIPs](https://github.com/ethereum/EIPs) の コミット履歴から自動生成（対象: 2026-09、基準コミット [`0b8184b`](https://github.com/ethereum/EIPs/commit/0b8184b1d6ed9fba836222684fd082b32782d4ef)）。
+> [ethereum/EIPs](https://github.com/ethereum/EIPs) のコミット履歴から集計（対象: 2026-09、基準コミット [`0b8184b`](https://github.com/ethereum/EIPs/commit/0b8184b1d6ed9fba836222684fd082b32782d4ef)）。
 
 ## サマリー
 
