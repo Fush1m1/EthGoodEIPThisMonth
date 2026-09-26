@@ -114,7 +114,7 @@ SFI（Scheduled for Inclusion）は引き続き **FOCIL（EIP-7805）** と **Fr
 ## 5. Solidity サンプル（[`contracts/`](./contracts)）
 
 今月の EIP のうち、コントラクト開発者に直接影響するものを Solidity で実装した。
-Foundry プロジェクトで、forge-std などの外部依存はない。
+Foundry プロジェクトで、テストには forge-std（git サブモジュール、v1.16.2）を使用。
 
 | ファイル | 対応 EIP | 内容 |
 | --- | --- | --- |
@@ -123,6 +123,7 @@ Foundry プロジェクトで、forge-std などの外部依存はない。
 | [`src/eip8246/SelfDestructBurn.sol`](./contracts/src/eip8246/SelfDestructBurn.sol) | EIP-8246 | `SelfBurner`: SELFDESTRUCT で ETH を焼却する従来のパターン（OP Stack の `burn()` 相当）<br>`BurnProbe`: EIP-8246 が有効なチェーンかをオンチェーンで判定<br>`SupplyBurner`: EIP-8246 後の移行例（dead アドレスへ送金） |
 
 ```bash
+git submodule update --init
 cd 2026-09/contracts
 forge test
 ```

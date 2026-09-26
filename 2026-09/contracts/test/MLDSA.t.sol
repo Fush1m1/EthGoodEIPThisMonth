@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {TestBase} from "./TestBase.sol";
+import {Test} from "forge-std/Test.sol";
 import {MLDSA} from "../src/eip8355/MLDSA.sol";
 import {MLDSAAccount} from "../src/eip8355/MLDSAAccount.sol";
 
@@ -46,7 +46,7 @@ contract Target {
     }
 }
 
-contract MLDSATest is TestBase {
+contract MLDSATest is Test {
     LibHarness internal lib;
 
     function setUp() public {
@@ -74,9 +74,9 @@ contract MLDSATest is TestBase {
 
     function test_NotAvailableBeforeFork() public view {
         // プリコンパイル未導入のチェーンでは空の returndata が返る → false 扱い
-        assertTrue(!lib.isAvailable(MLDSA.ParamSet.MLDSA44), "should be unavailable");
+        assertFalse(lib.isAvailable(MLDSA.ParamSet.MLDSA44), "should be unavailable");
         bytes memory pk = _key(1);
-        assertTrue(!lib.verify(MLDSA.ParamSet.MLDSA44, pk, _sign(pk, "hi"), "hi"), "must not verify");
+        assertFalse(lib.verify(MLDSA.ParamSet.MLDSA44, pk, _sign(pk, "hi"), "hi"), "must not verify");
     }
 
     function test_VerifyValidAndInvalid() public {
@@ -85,8 +85,8 @@ contract MLDSATest is TestBase {
         bytes memory pk = _key(1);
         bytes memory sig = _sign(pk, "hello");
         assertTrue(lib.verify(MLDSA.ParamSet.MLDSA44, pk, sig, "hello"), "valid signature rejected");
-        assertTrue(!lib.verify(MLDSA.ParamSet.MLDSA44, pk, sig, "hellO"), "tampered message accepted");
-        assertTrue(!lib.verify(MLDSA.ParamSet.MLDSA44, _key(2), sig, "hello"), "wrong key accepted");
+        assertFalse(lib.verify(MLDSA.ParamSet.MLDSA44, pk, sig, "hellO"), "tampered message accepted");
+        assertFalse(lib.verify(MLDSA.ParamSet.MLDSA44, _key(2), sig, "hello"), "wrong key accepted");
     }
 
     function test_RevertOnBadLength() public {

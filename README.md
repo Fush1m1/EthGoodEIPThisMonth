@@ -13,6 +13,7 @@
 各月のフォルダの `contracts/` に、その月の EIP に対応した Solidity 実装を置いています（Foundry プロジェクト）。
 
 ```bash
+git submodule update --init
 cd 2026-09/contracts
 forge test
 ```
