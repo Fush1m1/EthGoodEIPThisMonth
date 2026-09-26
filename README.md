@@ -4,9 +4,9 @@
 
 ## 月次レポート
 
-| 月 | まとめ | 集計データ | Solidity |
-| --- | --- | --- | --- |
-| 2026-09 | [README](./2026-09/README.md) | [eip-activity.md](./2026-09/eip-activity.md) | [contracts](./2026-09/contracts) |
+| 月 | まとめ | Solidity |
+| --- | --- | --- |
+| 2026-09 | [eip-activity.md](./2026-09/eip-activity.md) | [contracts](./2026-09/contracts) |
 
 ## Solidity サンプル
 
