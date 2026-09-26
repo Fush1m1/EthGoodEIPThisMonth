@@ -4,7 +4,9 @@ pragma solidity ^0.8.24;
 import {Test} from "forge-std/Test.sol";
 import {BurnProbe, SelfBurner, SupplyBurner} from "../src/eip8246/SelfDestructBurn.sol";
 
-/// @dev 現行 EVM（EIP-8246 未導入）での挙動を確認するテスト。
+/// @dev Tests the behavior on the current EVM (without EIP-8246).
+///      On an EVM with EIP-8246, the results flip: ETH is not burned and the balance remains.
+///      現行 EVM（EIP-8246 未導入）での挙動を確認するテスト。
 ///      EIP-8246 が有効な EVM で実行すると、焼却されずに残高が残る側に結果が反転する。
 contract SelfDestructBurnTest is Test {
     function test_SelfBurnerBurnsBeforeEip8246() public {

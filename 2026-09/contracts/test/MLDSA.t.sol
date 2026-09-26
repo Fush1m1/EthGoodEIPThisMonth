@@ -5,7 +5,10 @@ import {Test} from "forge-std/Test.sol";
 import {MLDSA} from "../src/eip8355/MLDSA.sol";
 import {MLDSAAccount} from "../src/eip8355/MLDSAAccount.sol";
 
-/// @dev EIP-8355 プリコンパイルのモック。実際の ML-DSA 検証の代わりに
+/// @dev Mock of the EIP-8355 precompile. Instead of real ML-DSA verification, a signature is
+///      treated as valid if its first 32 bytes == keccak256(pubkey ++ message).
+///      The I/O format (concatenated input, 32-byte output, 0 for short input) follows EIP-8355.
+///      EIP-8355 プリコンパイルのモック。実際の ML-DSA 検証の代わりに
 ///      「署名の先頭 32 バイト == keccak256(pubkey ++ message)」なら有効とみなす。
 ///      入出力フォーマット（連結入力・32 バイト出力・短い入力は 0）は EIP-8355 に合わせる。
 contract MockMLDSAPrecompile {
@@ -73,6 +76,7 @@ contract MLDSATest is Test {
     }
 
     function test_NotAvailableBeforeFork() public view {
+        // Without the precompile, empty returndata comes back -> treated as false
         // プリコンパイル未導入のチェーンでは空の returndata が返る → false 扱い
         assertFalse(lib.isAvailable(MLDSA.ParamSet.MLDSA44), "should be unavailable");
         bytes memory pk = _key(1);
@@ -115,6 +119,7 @@ contract MLDSATest is Test {
         assertEq(address(target).balance, 0.1 ether, "value not sent");
         assertEq(account.nonce(), 1, "nonce not bumped");
 
+        // Reusing the same signature (replay) fails because the nonce has advanced
         // 同じ署名の再利用（リプレイ）は nonce が進んでいるので失敗する
         vm.expectRevert(MLDSAAccount.InvalidSignature.selector);
         account.execute(address(target), 0.1 ether, data, pk, sig);

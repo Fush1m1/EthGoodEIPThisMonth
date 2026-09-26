@@ -4,8 +4,12 @@ pragma solidity ^0.8.24;
 import {MLDSA} from "./MLDSA.sol";
 
 /// @title MLDSAAccount
-/// @notice ML-DSA（ポスト量子署名）の鍵で操作するシンプルなスマートアカウント。
-/// @dev EIP-8355 のユースケース例。公開鍵は 1〜2.5KB と大きいため、ストレージには
+/// @notice A simple smart account controlled by an ML-DSA (post-quantum signature) key.
+///         ML-DSA（ポスト量子署名）の鍵で操作するシンプルなスマートアカウント。
+/// @dev Example use case for EIP-8355. Public keys are large (1-2.5 KB), so only their
+///      keccak256 hash is stored and the key itself is passed in calldata at execution.
+///      The signed message includes chainid, the contract address and a nonce to prevent replay.
+///      EIP-8355 のユースケース例。公開鍵は 1〜2.5KB と大きいため、ストレージには
 ///      keccak256 ハッシュだけを保存し、実行時に calldata で公開鍵を渡す。
 ///      署名対象メッセージは chainid・コントラクトアドレス・nonce を含めてリプレイを防ぐ。
 contract MLDSAAccount {
@@ -30,7 +34,8 @@ contract MLDSAAccount {
 
     receive() external payable {}
 
-    /// @notice 署名対象のメッセージ。オフチェーンの署名者はこのバイト列に ML-DSA 署名する。
+    /// @notice The message to be signed. Off-chain signers produce an ML-DSA signature over these bytes.
+    ///         署名対象のメッセージ。オフチェーンの署名者はこのバイト列に ML-DSA 署名する。
     function operationMessage(address target, uint256 value, bytes calldata data, uint256 opNonce)
         public
         view
@@ -39,7 +44,8 @@ contract MLDSAAccount {
         return abi.encode(block.chainid, address(this), opNonce, target, value, keccak256(data));
     }
 
-    /// @notice ML-DSA 署名付きで任意の呼び出しを実行する。誰でもリレー可能。
+    /// @notice Executes an arbitrary call authorized by an ML-DSA signature. Anyone can relay it.
+    ///         ML-DSA 署名付きで任意の呼び出しを実行する。誰でもリレー可能。
     function execute(
         address target,
         uint256 value,
@@ -61,7 +67,8 @@ contract MLDSAAccount {
         emit Executed(opNonce, target, value, data);
     }
 
-    /// @notice 鍵のローテーション。execute 経由（自分自身への呼び出し）でのみ実行可能。
+    /// @notice Rotates the key. Callable only via execute (a call to itself).
+    ///         鍵のローテーション。execute 経由（自分自身への呼び出し）でのみ実行可能。
     function rotatePublicKey(bytes calldata newPublicKey) external {
         if (msg.sender != address(this)) revert OnlySelf();
         uint256 pkLen = MLDSA.publicKeyLength(paramSet);
